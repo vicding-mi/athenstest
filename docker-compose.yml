@@ -1,0 +1,34 @@
+volumes:
+  athenstest-data:
+
+networks:
+  vlo_network_vlo:
+    external: true
+  traefik-public:
+    external: true
+
+services:
+  fastapi:
+    image: registry.diginfra.net/tsd/athenstest:latest
+    container_name: fastapi
+    hostname: fastapi
+    restart: unless-stopped
+    volumes:
+      - "athenstest-data:/app/data"
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    networks:
+      - vlo_network_vlo
+      - traefik-public
+    ports:
+      - "38000:8000"
+
+  basex-test:
+    image: registry.diginfra.net/tsd/basex:latest
+    container_name: basex-test
+    hostname: basex-test
+    restart: unless-stopped
+    volumes:
+      - athenstest-data:/data
+      - ./basex_data:/basex/dbdata
+    networks:
+      - traefik-public
