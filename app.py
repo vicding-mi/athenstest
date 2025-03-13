@@ -823,7 +823,8 @@ def get_accept_header(accept: str | None):
     return accept_header
 
 
-def create_response(data: dict, accept: str):
+def create_response(data: dict | None, accept: str):
+    data = data or {}
     if accept == "application/xml":
         xml_response = dicttoxml(data)
         return Response(content=xml_response, media_type="application/xml")
@@ -850,9 +851,11 @@ async def get_product(product_id: str, accept: str | None = Query(None)):
         product_id = random.choice(list(processed_files.keys()))
     elif not product_id.endswith("_processed"):
         product_id = f"{product_id}_processed"
-    v = processed_files.get(product_id, None)
+    v: list = processed_files.get(product_id, [])
 
-    return create_response({product_id: v}, accept_header)
+    result = {k: new_v for item in v for k, new_v in item.items()}
+    logger.error(f"result is {result}")
+    return create_response(result, accept_header)
 
 
 @app.get("/products")
