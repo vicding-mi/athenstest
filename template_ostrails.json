@@ -2,12 +2,12 @@
     "local_identifier": "<md:id,err:there is no id!",
     "identifiers": [
       {
-        "scheme": "doi", 
+        "scheme": "lit#:doi",
         "value": "<md:_selfLink,err:there is no id!"
       }
     ],
-    "entity_type": "product",
-    "product_type": "literature",
+    "entity_type": "lit#:product",
+    "product_type": "lit#:literature",
     "titles": "<md:name",
     "abstracts": "<md:description"
 }

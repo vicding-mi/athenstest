@@ -1,7 +1,8 @@
-import fastapi.exceptions
-
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, Response
+from fastapi import FastAPI, Query, Header, HTTPException
+from fastapi.responses import HTMLResponse, Response, JSONResponse
+from urllib.parse import urlparse, unquote, parse_qs
+from dicttoxml import dicttoxml
+import random
 import requests
 import os
 import json
@@ -21,6 +22,8 @@ output_path_queries = "./queries"
 delete_path = "./deleted_documents"
 parsed_datasets_directory = './data/parsed_datasets'
 template_path = "./template_ostrails.json"
+processed_tools_folder = 'processed_jsonfiles_tools'
+processed_datasets_folder = 'processed_jsonfiles_datasets'
 basex_host = "basex-test"
 
 # Solr API
@@ -30,6 +33,8 @@ username = dotenv.get_key(".env", "USERNAME")
 password = dotenv.get_key(".env", "PASSWORD")
 # global cache for vocabularies
 vocabs = {}
+# all processed files
+processed_files = {}
 
 # title should be 67 characters with 3 dots, and description should be 297 characters with 3 dots
 # title_limit: int = 67 # limit for 8 media ineo
@@ -663,6 +668,16 @@ def retrieve_info(info, ruc, template_type: str, current_id) -> list | str | Non
             if res is not None:
                 break  # Exit the loop once a match is found
 
+        # check for literal values
+        logger.debug("### info_value: " + info_value)
+        if info_value.startswith("lit#"):
+            info_parts = info_value.split(":")
+            logger.error(f"### info_parts[{info_parts}]")
+
+            if len(info_parts) >= 2:
+                res = info_parts[1]
+                logger.error(f"Literal value ###: {res}")
+
         # This line checks if info_value starts with the prefix "err" ("<ruc:learn,err:there is no learn!")
         if info_value.startswith("err"):
             msg = info_value.split(":")[1].strip()  # "there is no learn!"
@@ -699,6 +714,9 @@ def traverse_data(template, ruc, template_type: str, current_id):
                 # Extract the information after the '<'
                 info = value.split("<")[1]
                 logger.error(f"curent info is {info}")
+                value = retrieve_info(info, ruc, template_type, current_id)
+            elif isinstance(value, str) and value.startswith("lit#"):
+                info = value
                 value = retrieve_info(info, ruc, template_type, current_id)
             else:
                 # dealing with nested dictionaries or lists
@@ -766,8 +784,8 @@ def template(current_id: str, template_path: str, template_type: str = "datasets
     res = traverse_data(template, ruc, template_type, current_id)
 
     # Create folders if they don't exist
-    tools_folder = 'processed_jsonfiles_tools'
-    datasets_folder = 'processed_jsonfiles_datasets'
+    tools_folder = processed_tools_folder
+    datasets_folder = processed_datasets_folder
 
     if not os.path.exists(tools_folder):
         os.makedirs(tools_folder)
@@ -792,14 +810,62 @@ def template(current_id: str, template_path: str, template_type: str = "datasets
     logger.info(f"JSON files saved successfully. {filename}")
 
 
+def get_accept_header(accept: str | None):
+    if accept is None:
+        accept_header = "application/json"
+    else:
+        query_params = parse_qs(accept)
+        accept_header = query_params.get('accept', None)
+        if accept_header:
+            accept_header = accept_header[0]
+        else:
+            accept_header = "application/json"
+    return accept_header
+
+
+def create_response(data: dict, accept: str):
+    if accept == "application/xml":
+        xml_response = dicttoxml(data)
+        return Response(content=xml_response, media_type="application/xml")
+    elif accept == "text/plain":
+        plain_text_response = "\n".join([f"{key}: {value}" for key, value in data.items()])
+        return Response(content=plain_text_response, media_type="text/plain")
+    else:
+        return JSONResponse(content=data)
+
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     return "<h1>Hello, World!</h1>"
 
 
 @app.get("/products/{product_id}")
-async def get_product(product_id: str):
-    return {"product_id": product_id}
+async def get_product(product_id: str, accept: str | None = Query(None)):
+    global processed_files
+    accept_header = get_accept_header(accept)
+
+    if len(processed_files) == 0:
+        processed_files = load_files(processed_datasets_folder)
+
+    if product_id == "random":
+        product_id = random.choice(list(processed_files.keys()))
+    elif not product_id.endswith("_processed"):
+        product_id = f"{product_id}_processed"
+    v = processed_files.get(product_id, None)
+
+    return create_response({product_id: v}, accept_header)
+
+
+@app.get("/products")
+async def get_products(accept: str | None = Query(None)):
+    global processed_files
+    accept_header = get_accept_header(accept)
+
+    if len(processed_files) == 0:
+        processed_files = load_files(processed_datasets_folder)
+    k, v = next(iter(processed_files.items()))
+    logger.error(f"Returning {k} - {v}")
+
+    return create_response({"accept": accept_header, "total": len(processed_files), k: v}, accept_header)
 
 
 @app.get("/fetchall", response_class=HTMLResponse)

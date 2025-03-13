@@ -32,3 +32,17 @@ services:
       - ./basex_data:/basex/dbdata
     networks:
       - traefik-public
+
+  prism:
+    image: stoplight/prism:4
+    container_name: prism
+    hostname: prism
+    restart: unless-stopped
+    init: true
+    volumes:
+      - "./skg-if-api.yaml:/tmp/skg-if-api.yaml"
+    command: ["proxy", "-h", "0.0.0.0", "/tmp/skg-if-api.yaml", "http://fastapi:8000", "--errors"]
+    networks:
+      - traefik-public
+    ports:
+      - "34010:4010"
