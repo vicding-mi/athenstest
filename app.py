@@ -793,19 +793,13 @@ def template(current_id: str, template_path: str, template_type: str = "datasets
     if not os.path.exists(datasets_folder):
         os.makedirs(datasets_folder)
 
-    # Iterate through the results and save JSON files accordingly
-    processed_results = []
-
     logger.error(f"Processing result: {res} of type {type(res)}")
     folder_name = datasets_folder
-    for k, v in res.items():
-        logger.error(f"appending result: {k} with value {v}")
-        processed_results.append({k: v})
 
     filename = os.path.join(folder_name, f"{current_id}_processed.json")
 
     with open(filename, 'w') as file:
-        json.dump(processed_results, file, indent=2)
+        json.dump(res, file, indent=2)
 
     logger.info(f"JSON files saved successfully. {filename}")
 
@@ -853,9 +847,8 @@ async def get_product(product_id: str, accept: str | None = Query(None)):
         product_id = f"{product_id}_processed"
     v: list = processed_files.get(product_id, [])
 
-    result = {k: new_v for item in v for k, new_v in item.items()}
-    logger.error(f"result is {result}")
-    return create_response(result, accept_header)
+    logger.error(f"result is {v}")
+    return create_response(v, accept_header)
 
 
 @app.get("/products")

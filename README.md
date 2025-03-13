@@ -21,3 +21,8 @@ Link to single product: http://url:38000/products/{id} or http://url:38000/produ
 
 ## How to validate
 Go to http://url:34010/products or http://url:34010/products/{id} to see the results.
+
+
+## 
+url to dataset http://n-10-27-6-240.diginfra.net:38000/products/https_58__47__47_archief.nl_47_id_47_dataset_47_toegang_47_2.16.131
+url to test http://n-10-27-6-240.diginfra.net:34010/products/https_58__47__47_archief.nl_47_id_47_dataset_47_toegang_47_2.16.131
