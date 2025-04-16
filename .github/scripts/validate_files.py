@@ -7,15 +7,15 @@ import httpx
 # External service URL
 VALIDATION_URL = "https://google.com"
 CHANGED_FILES = os.getenv("CHANGED_FILES", "")
+changed_files = []
 if CHANGED_FILES and CHANGED_FILES != "":
-    CHANGED_FILES = CHANGED_FILES.split()
+    changed_files: list = CHANGED_FILES.split()
 
 print(f"CHANGED_FILES: {CHANGED_FILES}")
 print(f"cli parameter: {sys.argv[1] if len(sys.argv) > 1 else None}")
 
 def get_pushed_files():
-    pushed_files = CHANGED_FILES.copy()
-    return [file for file in pushed_files if file.endswith(".json")]
+    return [file for file in changed_files if file.endswith(".json")]
 
 
 def validate_file(file_path):
