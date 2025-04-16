@@ -8,6 +8,7 @@ dependencies = [
     "dicttoxml>=1.7.16",
     "dotenv>=0.9.9",
     "fastapi>=0.115.11",
+    "httpx>=0.28.1",
     "markdown>=3.7",
     "plain-text-markdown-extention",
     "requests>=2.32.3",
