@@ -28,8 +28,8 @@ jobs:
     - name: Get changed files for push
       run: |
         CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
-#        echo "Changed files: $CHANGED_FILES"
-        echo "changed_files=$CHANGED_FILES" >> $GITHUB_ENV
+        echo "Changed files: $CHANGED_FILES"
+#        echo "changed_files=$CHANGED_FILES" >> $GITHUB_ENV
 
     - name: Validate files
       run: |
