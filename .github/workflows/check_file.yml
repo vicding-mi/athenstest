@@ -29,11 +29,10 @@ jobs:
       run: |
         CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
         echo "Changed files: $CHANGED_FILES"
-#        echo "changed_files=$CHANGED_FILES" >> $GITHUB_ENV
 
     - name: Validate files
       run: |
         echo "Validating the following files: $CHANGED_FILES"
-        python .github/scripts/validate_files.py $CHANGED_FILES
+        python .github/scripts/validate_files.py
       env:
-        CHANGED_FILES: $CHANGED_FILES
+        CHANGED_FILES: ${{ env.CHANGED_FILES }}
