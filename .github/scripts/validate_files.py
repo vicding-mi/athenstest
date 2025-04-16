@@ -9,6 +9,7 @@ VALIDATION_URL = "https://google.com"
 def get_pushed_files():
     """Retrieve the list of files just pushed from the GitHub event payload."""
     event_path = os.getenv("GITHUB_EVENT_PATH")
+    print(f"GITHUB_EVENT_PATH: {event_path}")
     if not event_path or not os.path.exists(event_path):
         raise FileNotFoundError("GITHUB_EVENT_PATH is not set or the file does not exist.")
 
