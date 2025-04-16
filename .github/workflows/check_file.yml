@@ -25,17 +25,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install httpx 
 
-    - name: Get changed files
-      id: changed-files
+    - name: Get changed files for push
       run: |
-        CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }})
-        echo "github.base_ref: ${{ github.base_ref }}"  # Debugging output
-        echo "github.head_ref: ${{ github.head_ref }}"  # Debugging output
-        echo "CHANGED_FILES: $CHANGED_FILES"  # Debugging output
+        CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
         echo "changed_files=$CHANGED_FILES" >> $GITHUB_ENV
 
     - name: Validate files
       run: |
+        echo "Validating the following files: $CHANGED_FILES"
         python .github/scripts/validate_files.py $CHANGED_FILES
       env:
         CHANGED_FILES: $CHANGED_FILES
