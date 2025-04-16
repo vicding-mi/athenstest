@@ -9,7 +9,7 @@ CHANGED_FILES = os.getenv("CHANGED_FILES", "")
 if CHANGED_FILES and CHANGED_FILES != "":
     CHANGED_FILES = CHANGED_FILES.split()
 
-
+print(f"CHANGED_FILES: {CHANGED_FILES}")
 # def get_pushed_files():
 #     """Retrieve the list of files just pushed from the GitHub event payload."""
 #     event_path = os.getenv("GITHUB_EVENT_PATH")
