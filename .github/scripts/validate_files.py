@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import httpx
 
@@ -10,25 +11,8 @@ if CHANGED_FILES and CHANGED_FILES != "":
     CHANGED_FILES = CHANGED_FILES.split()
 
 print(f"CHANGED_FILES: {CHANGED_FILES}")
-# def get_pushed_files():
-#     """Retrieve the list of files just pushed from the GitHub event payload."""
-#     event_path = os.getenv("GITHUB_EVENT_PATH")
-#     print(f"GITHUB_EVENT_PATH: {event_path}")
-#     if not event_path or not os.path.exists(event_path):
-#         raise FileNotFoundError("GITHUB_EVENT_PATH is not set or the file does not exist.")
-#
-#     with open(event_path, "r") as f:
-#         event_data = json.load(f)
-#
-#     print(f"Event data key: {event_data.keys()}")
-#     for k, v in event_data.items():
-#         print(f"{k}: {v}")
-#     pushed_files = set()
-#     for commit in event_data.get("commits", []):
-#         pushed_files.update(commit.get("added", []))
-#         pushed_files.update(commit.get("modified", []))
-#
-#     return [file for file in pushed_files if file.endswith(".json")]
+print(f"cli parameter: {sys.argv[1] if len(sys.argv) > 1 else None}")
+
 def get_pushed_files():
     pushed_files = CHANGED_FILES.copy()
     return [file for file in pushed_files if file.endswith(".json")]
@@ -49,6 +33,7 @@ def validate_file(file_path):
 
 def main():
     """Main function to validate pushed files."""
+    print(f"CHANGED_FILES: {CHANGED_FILES}")
     pushed_files = get_pushed_files()
     print(f"Pushed files: {pushed_files}")
     if not pushed_files:
