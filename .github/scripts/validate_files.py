@@ -40,6 +40,7 @@ def validate_file(file_path):
 def main():
     """Main function to validate pushed files."""
     pushed_files = get_pushed_files()
+    print(f"Pushed files: {pushed_files}")
     if not pushed_files:
         print("No JSON files to validate.")
         return
