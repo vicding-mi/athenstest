@@ -16,7 +16,11 @@ def get_pushed_files():
     with open(event_path, "r") as f:
         event_data = json.load(f)
 
-    print(f"Event data: {event_data}")
+    print(f"Event data key: {event_data.keys()}")
+    if "commits" not in event_data:
+        raise ValueError("No commits found in the event data.")
+    else:
+        print(f"Event data commits: {event_data['commits']}")
     pushed_files = set()
     for commit in event_data.get("commits", []):
         pushed_files.update(commit.get("added", []))
