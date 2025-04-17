@@ -31,6 +31,18 @@ jobs:
         echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
         echo "Changed files: $CHANGED_FILES"
 
+    - name: Get openapi spec
+      run: |
+        echo "Fetching OpenAPI spec..."
+        curl -o skg-if-api.yaml https://gitlab.esrf.fr/smis/ostrails/-/raw/main/skg-if-api/skg-if-api.yaml
+        echo "OpenAPI spec fetched successfully."
+
+    - name: Run Docker Compose
+      run: |
+        echo "Running Docker Compose..."
+        docker-compose -f docker-compose-validation.yml up -d
+        echo "Docker Compose finished successfully."
+
     - name: Validate files
       run: |
         echo "Validating the following files: $CHANGED_FILES"

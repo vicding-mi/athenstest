@@ -5,14 +5,13 @@ import httpx
 
 
 # External service URL
-VALIDATION_URL = "https://google.com"
+VALIDATION_URL = "http://localhost:8000/products/random"
 CHANGED_FILES = os.getenv("CHANGED_FILES", "")
 changed_files = []
 if CHANGED_FILES and CHANGED_FILES != "":
     changed_files: list = CHANGED_FILES.split()
 
 print(f"CHANGED_FILES: {CHANGED_FILES}")
-print(f"cli parameter: {sys.argv[1] if len(sys.argv) > 1 else None}")
 
 def get_pushed_files():
     return [file for file in changed_files if file.endswith(".json")]
@@ -23,11 +22,11 @@ def validate_file(file_path):
     with open(file_path, "rb") as f:
         # response = httpx.post(VALIDATION_URL, files={"file": f})
         response = httpx.get(VALIDATION_URL)
-        if 200 <= response.status_code < 300:
+        if 200 <= response.status_code < 303:
             print(f"✅ {file_path} is valid.")
             return True
         else:
-            print(f"❌ {file_path} is invalid: {response.text}")
+            print(f"❌ {file_path} is invalid.")
             return False
 
 
