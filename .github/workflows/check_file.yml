@@ -48,6 +48,9 @@ jobs:
         while ! curl -s http://localhost:4010/ > /dev/null; do
         sleep 5
         done
+        while ! curl -s http://localhost:8000/ > /dev/null; do
+        sleep 5
+        done
         echo "Docker containers are ready."
         curl http://localhost:8000/
 
