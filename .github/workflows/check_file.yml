@@ -41,7 +41,15 @@ jobs:
       run: |
         echo "Running Docker Compose..."
         docker compose -f docker-compose-validation.yml up -d
-        echo "Docker Compose finished successfully."
+
+    - name: Test if docker is ready
+      run: |
+        echo "Waiting for Docker containers to be ready..."
+        while ! curl -s http://localhost:4010/ > /dev/null; do
+        sleep 5
+        done
+        echo "Docker containers are ready."
+        curl http://localhost:8000/
 
     - name: Validate files
       run: |
