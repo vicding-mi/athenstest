@@ -21,7 +21,7 @@ def validate_file(file_path):
     """Validate a single file against the external service."""
     print(f"Validating {file_path}...")
     filename = os.path.basename(file_path)
-    url = VALIDATION_URL + filename
+    url = VALIDATION_URL + "products/" + filename
     print(f"Validation URL: {url}")
     response = httpx.get(url)
     print(f"Response: {response.status_code} {response.text}")
