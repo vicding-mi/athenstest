@@ -46,9 +46,11 @@ jobs:
       run: |
         echo "Waiting for Docker containers to be ready..."
         while ! curl -s http://localhost:4010/ > /dev/null; do
+        docker logs prism
         sleep 5
         done
         while ! curl -s http://localhost:8000/ > /dev/null; do
+        docker logs fastapi
         sleep 5
         done
         echo "Docker containers are ready."
