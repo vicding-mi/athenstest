@@ -1,22 +1,25 @@
 services:
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    hostname: nginx
+  fastapi:
+#    image: registry.diginfra.net/tsd/athenstest:latest
+    image: vicding81/athenstest:latest
+    container_name: fastapi
+    hostname: fastapi
     volumes:
       - "./sample_data:/app/data"
-      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "./app.py:/app/app.py"
+    command: [ "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
     ports:
-      - "8000:80"
+      - "8000:8000"
 
 
   prism:
     image: stoplight/prism:4
     container_name: prism
     hostname: prism
+    platform: "linux/amd64"
     init: true
     volumes:
       - "./skg-if-api.yaml:/tmp/skg-if-api.yaml"
-    command: ["proxy", "-h", "0.0.0.0", "/tmp/skg-if-api.yaml", "http://nginx:8000", "--errors"]
+    command: ["proxy", "-h", "0.0.0.0", "/tmp/skg-if-api.yaml", "http://fastapi:8000", "--errors"]
     ports:
       - "4010:4010"

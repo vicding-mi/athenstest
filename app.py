@@ -833,22 +833,39 @@ async def read_root():
     return "<h1>Hello, World!</h1>"
 
 
-@app.get("/products/{product_id}")
-async def get_product(product_id: str, accept: str | None = Query(None)):
-    global processed_files
+# @app.get("/validate/{file_path}")
+@app.get("/products/{file_path}")
+async def get_file(file_path: str, accept: str | None = Query(None)):
+    logger.warning(f"original file_path: {file_path}")
+    filename = os.path.basename(file_path)
+    logger.warning(f"filename basename: {filename}")
+    file_path = os.path.join("/app/data", filename)
+    logger.warning(f"file_path: {file_path}")
     accept_header = get_accept_header(accept)
+    if os.path.isfile(file_path):
+        with open(file_path, "r") as file:
+            data = json.load(file)
+        return create_response(data, accept_header)
+    else:
+        return JSONResponse(content={"error": f"File not found {file_path}"}, status_code=404)
 
-    if len(processed_files) == 0:
-        processed_files = load_files(processed_datasets_folder)
 
-    if product_id == "random":
-        product_id = random.choice(list(processed_files.keys()))
-    elif not product_id.endswith("_processed"):
-        product_id = f"{product_id}_processed"
-    v: list = processed_files.get(product_id, [])
-
-    logger.error(f"result is {v}")
-    return create_response(v, accept_header)
+# @app.get("/products/{product_id}")
+# async def get_product(product_id: str, accept: str | None = Query(None)):
+#     global processed_files
+#     accept_header = get_accept_header(accept)
+#
+#     if len(processed_files) == 0:
+#         processed_files = load_files(processed_datasets_folder)
+#
+#     if product_id == "random":
+#         product_id = random.choice(list(processed_files.keys()))
+#     elif not product_id.endswith("_processed"):
+#         product_id = f"{product_id}_processed"
+#     v: list = processed_files.get(product_id, [])
+#
+#     logger.error(f"result is {v}")
+#     return create_response(v, accept_header)
 
 
 @app.get("/products")

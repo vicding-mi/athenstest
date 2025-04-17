@@ -54,7 +54,6 @@ jobs:
         sleep 5
         done
         echo "Docker containers are ready."
-        curl http://localhost:8000/
 
     - name: Validate files
       run: |
