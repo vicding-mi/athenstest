@@ -1,6 +1,7 @@
 services:
   fastapi:
-    image: registry.diginfra.net/tsd/athenstest:latest
+#    image: registry.diginfra.net/tsd/athenstest:latest
+    image: vicding81/athenstest:latest
     container_name: fastapi
     hostname: fastapi
     volumes:
