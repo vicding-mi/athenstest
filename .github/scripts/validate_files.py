@@ -22,6 +22,7 @@ def validate_file(file_path):
     print(f"Validating {file_path}...")
     filename = os.path.basename(file_path)
     url = VALIDATION_URL + filename
+    print(f"Validation URL: {url}")
     response = httpx.get(url)
     print(f"Response: {response.status_code} {response.text}")
     if 200 <= response.status_code < 303:
