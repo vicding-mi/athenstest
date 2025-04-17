@@ -5,7 +5,7 @@ import httpx
 
 
 # External service URL
-VALIDATION_URL = "http://localhost:8000/products/random"
+VALIDATION_URL = "http://localhost:4010/"
 CHANGED_FILES = os.getenv("CHANGED_FILES", "")
 changed_files = []
 if CHANGED_FILES and CHANGED_FILES != "":
@@ -19,15 +19,17 @@ def get_pushed_files():
 
 def validate_file(file_path):
     """Validate a single file against the external service."""
-    with open(file_path, "rb") as f:
-        # response = httpx.post(VALIDATION_URL, files={"file": f})
-        response = httpx.get(VALIDATION_URL)
-        if 200 <= response.status_code < 303:
-            print(f"✅ {file_path} is valid.")
-            return True
-        else:
-            print(f"❌ {file_path} is invalid.")
-            return False
+    print(f"Validating {file_path}...")
+    filename = os.path.basename(file_path)
+    url = VALIDATION_URL + filename
+    response = httpx.get(url)
+    print(f"Response: {response.status_code} {response.text}")
+    if 200 <= response.status_code < 303:
+        print(f"✅ {file_path} is valid.")
+        return True
+    else:
+        print(f"❌ {file_path} is invalid.")
+        return False
 
 
 def main():
