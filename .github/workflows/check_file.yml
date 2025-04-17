@@ -40,7 +40,7 @@ jobs:
     - name: Run Docker Compose
       run: |
         echo "Running Docker Compose..."
-        docker-compose -f docker-compose-validation.yml up -d
+        docker compose -f docker-compose-validation.yml up -d
         echo "Docker Compose finished successfully."
 
     - name: Validate files
