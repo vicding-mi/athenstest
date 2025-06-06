@@ -1,4 +1,10 @@
 {
+  "@context": [
+    "https://w3id.org/skg-if/context/skg-if.json",
+    {
+      "@base": "https://example.com/skg-if/api/"
+    }
+  ],
   "local_identifier": "nl_47_id_47_dataset_47_toegang_47_2.05.32.01",
   "identifiers": [
     {
@@ -8,10 +14,14 @@
   ],
   "entity_type": "product",
   "product_type": "literature",
-  "titles": [
-    "Inventaris van het archief van het Ministerie van Buitenlandse Zaken: Bureau Bescherming, 1916-1939"
-  ],
-  "abstracts": [
-    "{code:und}Inventaris van het archief van het Ministerie van Buitenlandse Zaken: Bureau Bescherming, 1916-1939"
-  ]
+  "titles": {
+    "nl": [
+      "Inventaris van het archief van het Ministerie van Buitenlandse Zaken: Bureau Bescherming, 1916-1939"
+    ]
+  },
+  "abstracts": {
+    "nl": [
+      "Inventaris van het archief van het Ministerie van Buitenlandse Zaken: Bureau Bescherming, 1916-1939"
+    ]
+  }
 }
